@@ -1,29 +1,20 @@
-import { Component } from "react";
+import MovieCard from '../movie-card/MovieCard';
 
-import MovieCard from "../movie-card/MovieCard";
+import './MovieCardList.css';
 
-import './MovieCardList.css'
+function MovieList({ movieList }) {
+  const leftMovieList = movieList.map((movieItem) => (
+    <MovieCard
+      key={movieItem.id}
+      movieTitle={movieItem.original_title}
+      date={movieItem.release_date}
+      genres={movieItem.genres}
+      description={movieItem.overview}
+      imgPath={movieItem.poster_path}
+    />
+  ));
 
-export default class MovieCardList extends Component {
-
-    render(){
-            const {movieList} = this.props
-
-    const leftMovieList = movieList.map((movieItem, index) => {
-        return (
-            <MovieCard key={movieItem.id}
-                       movieTitle={movieItem.original_title}
-                       date={movieItem.release_date}
-                       genres={movieItem.genres}
-                       description={movieItem.overview}
-                       imgPath={movieItem.poster_path}
-            />
-        );
-    });
-        return(
-            <ul className="movieList">
-                { leftMovieList }
-            </ul>
-        )
-    }
+  return <ul className="movieList">{leftMovieList}</ul>;
 }
+
+export default MovieList;
