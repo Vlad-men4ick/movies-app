@@ -7,16 +7,17 @@ export default class MovieDBapi {
   async getResource(url) {
     const res = await fetch(`${this._baseApi}${url}`);
     if (!res.ok) {
-      throw new Error();
+      throw new Error('warrning');
     }
-    return res.json(); // await
+    const a = await res.json(); // await
+    return a;
   }
 
   getMovie(id) {
     return this.getResource(`/3/movie/${id}?api_key=${this._token}`);
   }
 
-  getImgForMovie(id) {
-    return this.getResource(`/3/movie/${id}/images?api_key=${this._token}`);
-  }
+  // getImgForMovie(id) {
+  //   return this.getResource(`/3/movie/${id}/images?api_key=${this._token}`);
+  // }
 }

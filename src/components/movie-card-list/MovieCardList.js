@@ -2,7 +2,7 @@ import MovieCard from '../movie-card/MovieCard';
 
 import './MovieCardList.css';
 
-function MovieList({ movieList }) {
+function MovieList({ movieList, page }) {
   const leftMovieList = movieList.map((movieItem) => (
     <MovieCard
       key={movieItem.id}
@@ -14,7 +14,7 @@ function MovieList({ movieList }) {
     />
   ));
 
-  return <ul className="movieList">{leftMovieList}</ul>;
+  return <ul className="movieList">{leftMovieList.slice(0 + page * 6, 6 + page * 6)}</ul>;
 }
 
 export default MovieList;
