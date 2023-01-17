@@ -1,49 +1,70 @@
-.movieCard {
-  height: 281px;
+.movie-item{
+  position: relative;
   display: flex;
-  max-width: 454px;
-  margin-bottom: 35px;
-  flex-basis: 50%;
-  margin-left: 32px;
-}
-.movieImg {
-  width: 183px;
-  margin-right: 20px;
-}
-.movieTitle {
-  margin-bottom: 15px;
-  font-size: 20px;
-  color: #000000;
-  font-weight: 400;
-}
-
-.releaseDate {
-  display: block;
-  margin-bottom: 10px;
-  color: #827e7e;
-  font-size: 12px;
-}
-
-.genresList {
-  display: flex;
-  margin-bottom: 10px;
-}
-
-.genresList__item {
-  list-style: none;
-  margin-right: 8px;
-  color: rgba(0, 0, 0, 0.65);
-  background: #fafafa;
-  color: #827e7e;
-  border: 1px solid #d9d9d9;
-  border-radius: 2px;
-  padding: 2px 4px;
-  font-size: 12px;
-  font-weight: 400;
-}
-
-.description {
-  line-height: 22px;
-  height: 200px;
+  width: 49%;
+  height: 280px;
   overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 0 5px 4px rgb(211, 211, 211);
+}
+.item-content{
+  padding: 12px 9px 0px 9px;
+  position: relative;
+  width: 100%;
+}
+.item-title{
+  margin: 0;
+  font-size: 16px;
+  width: 85%;
+}
+.item-description{
+  font-size: 12.5px;
+  height: 100px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+.item-premiere{
+  color: #827E7E;
+  font-size: 12px;
+}
+
+.item-img img{
+  width: 185px;
+  
+}
+.item-stars-rate{
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+.item-rate{
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  text-align: center;
+}
+.item-rate-value{
+  text-align: center;
+  position: relative;
+  /* left: 3px; */
+  top: 1px; 
+  font-weight: 600;
+}
+.no-poster{
+  border-right: 1px solid rgb(195, 193, 193);
+  padding-top: 60px;
+  text-align: center;
+  width: 185px;
+  height: 280px;
+}
+
+.genre-span{
+  display: inline-block;
+  border: 1px solid #D9D9D9;
+  background-color: #FAFAFA;
+  padding: 2px;
+  margin-right: 4px;
+  margin-top: 5px;
+  font-size: 12px;
+  cursor: pointer;
 }

@@ -1,6 +1,7 @@
-.movieList {
+.movie-list{
+  list-style-type: none;
+  padding: 0;
   display: flex;
   flex-wrap: wrap;
-  max-width: 980px;
-  margin: 0 auto;
+  justify-content: space-between;
 }
