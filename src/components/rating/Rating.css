@@ -1,0 +1,60 @@
+.item-stars-rate{
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+}
+.item-rate{
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  text-align: center;
+}
+.item-rate-value{
+  text-align: center;
+  position: relative;
+  top: 1px; 
+  font-weight: 600;
+}
+.item-rate-value span {
+  margin: 10px;
+}
+.ant-rate{
+  position: absolute;
+  bottom: 10px;
+  font-size: 17px;
+}
+
+@media(max-width: 962px) {
+  .item-rate{
+    right: 20px;
+    top: 15px;
+  }
+  .ant-rate{
+    white-space: nowrap;
+    right: 10px;
+  }
+}
+
+@media(max-width: 520px) {
+  :where(.css-dev-only-do-not-override-sk7ap8).ant-rate .ant-rate-star:not(:last-child){
+    margin-inline-end: 6px;
+  }
+  .ant-rate{
+    bottom: 6px;
+  }
+}
+
+@media(max-width: 500px) {
+  :where(.css-dev-only-do-not-override-sk7ap8).ant-rate .ant-rate-star:not(:last-child){
+    margin-inline-end: 3px;
+  }
+}
+
+@media(max-width: 470px) {
+  :where(.css-dev-only-do-not-override-sk7ap8).ant-rate .ant-rate-star:not(:last-child){
+    margin-inline-end: 6px;
+  }
+  .ant-rate{
+    font-size: 20px;
+  }
+}

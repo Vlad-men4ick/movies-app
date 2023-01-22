@@ -1,8 +1,17 @@
-/* eslint-disable react/sort-comp */
 import { Component } from 'react';
 import debounce from 'lodash.debounce';
+import PropTypes from 'prop-types';
 
 export default class SearchPanel extends Component {
+  static defaultProps = {
+    getMovieName: () => {},
+  };
+
+  static propTypes = {
+    getMovieName: PropTypes.func,
+  };
+
+  // eslint-disable-next-line react/sort-comp
   onLabelChange = (e) => {
     const { getMovieName } = this.props;
     getMovieName(e.target.value);

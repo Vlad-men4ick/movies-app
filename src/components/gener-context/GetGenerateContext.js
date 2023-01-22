@@ -1,9 +1,5 @@
 import React from 'react';
 
-const defaultValue = {
-  genres: [{ id: 1, name: '' }],
-};
-
-const { Provider: GenresProvider, Consumer: GenresConsumer } = React.createContext(defaultValue);
+const { Provider: GenresProvider, Consumer: GenresConsumer } = React.createContext();
 
 export { GenresProvider, GenresConsumer };

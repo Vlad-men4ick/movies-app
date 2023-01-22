@@ -1,15 +1,96 @@
 import './MovieCard.css';
+import '../rating/Rating.css';
 import { GenresConsumer } from '../gener-context/GetGenerateContext';
+import Rating from '../rating/Rating';
 import { format } from 'date-fns';
-import { Rate } from 'antd';
 import { Component } from 'react';
+import truncate from 'lodash.truncate';
+import PropTypes from 'prop-types';
 
 export default class MovieCard extends Component {
   state = {
-    rate: 0,
+    windowInnerWidth: window.innerWidth,
+  };
+
+  static defaultProps = {
+    imgPath: '',
+    movieTitle: '',
+    voteAverage: 0,
+    description: '',
+    date: '',
+    guestToken: '',
+    id: '',
+    rating: 0,
+    genreIds: [],
+  };
+
+  static propTypes = {
+    imgPath: PropTypes.string,
+    movieTitle: PropTypes.string,
+    voteAverage: PropTypes.number,
+    description: PropTypes.string,
+    date: PropTypes.string,
+    guestToken: PropTypes.string,
+    id: PropTypes.number,
+    rating: PropTypes.number,
+    genreIds: PropTypes.arrayOf(PropTypes.number),
   };
 
   keyForGenre = 1;
+
+  componentDidMount() {
+    window.addEventListener('resize', this.onResize);
+    this.onResize();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
+  }
+
+  onResize = () => {
+    this.setState(() => ({
+      windowInnerWidth: window.innerWidth,
+    }));
+  };
+
+  trunc = (a, f) => truncate(a, f);
+
+  descriptionFunc = (disc) => {
+    const { windowInnerWidth } = this.state;
+    if (windowInnerWidth >= 1050) {
+      const obj = { length: 300, separator: ' ' };
+      return this.trunc(disc, obj);
+    }
+    if (windowInnerWidth < 1050 && windowInnerWidth >= 800) {
+      const obj = { length: 200, separator: ' ' };
+      return this.trunc(disc, obj);
+    }
+    if (windowInnerWidth < 800 && windowInnerWidth >= 750) {
+      const obj = { length: 150, separator: ' ' };
+      return this.trunc(disc, obj);
+    }
+    if (windowInnerWidth < 750 && windowInnerWidth >= 736) {
+      const obj = { length: 130, separator: ' ' };
+      return this.trunc(disc, obj);
+    }
+    if (windowInnerWidth < 735 && windowInnerWidth >= 670) {
+      return disc;
+    }
+    if (windowInnerWidth < 670 && windowInnerWidth >= 520) {
+      const obj = { length: 180, separator: ' ' };
+      return this.trunc(disc, obj);
+    }
+    if (windowInnerWidth < 520 && windowInnerWidth >= 470) {
+      const obj = { length: 150, separator: ' ' };
+      return this.trunc(disc, obj);
+    }
+    if (windowInnerWidth < 470 && windowInnerWidth >= 420) {
+      const obj = { length: 200, separator: ' ' };
+      return this.trunc(disc, obj);
+    }
+    const obj = { length: 320, separator: ' ' };
+    return this.trunc(disc, obj);
+  };
 
   MoviePoster = () => {
     const { imgPath, movieTitle } = this.props;
@@ -17,20 +98,22 @@ export default class MovieCard extends Component {
   };
 
   NoPosterDiv = () => {
-    <div className="no-poster">
-      <h1>
-        {' '}
-        NO <br />
-        POSTER
-      </h1>
-    </div>;
+    const { movieTitle } = this.props;
+    return (
+      <div className="no-poster">
+        <h1>
+          NO <br />
+          POSTER
+        </h1>
+        {movieTitle}
+      </div>
+    );
   };
 
-  updateGenres = ({ genreIds }) => {
+  updateGenres = (genreIds) => (
     <GenresConsumer>
       {({ genres }) => {
         if (genres === undefined || genres === null) return null;
-        console.log(genres);
         const genresArr = genreIds.map((itemID) => {
           this.keyForGenre++;
           const genreNames = genres.map((obj) => {
@@ -47,8 +130,8 @@ export default class MovieCard extends Component {
         });
         return genresArr;
       }}
-    </GenresConsumer>;
-  };
+    </GenresConsumer>
+  );
 
   PremiereSpan = ({ date }) => (
     <>
@@ -57,39 +140,31 @@ export default class MovieCard extends Component {
   );
 
   render() {
-    const { imgPath, voteAverage, movieTitle, description, date, getRateValue, id } = this.props;
+    const { imgPath, voteAverage, movieTitle, description, date, guestToken, id, rating, genreIds } = this.props;
+
     const ItemImg = () => (imgPath ? this.MoviePoster(this.props) : this.NoPosterDiv());
 
-    const rateStyle = (a) => ({
+    const rateStyle = (valRate) => ({
       border: '2px solid',
       width: '30px',
       height: '30px',
       borderRadius: '100%',
-      borderColor: borderColor(a),
+      borderColor: borderColor(valRate),
     });
 
-    // eslint-disable-next-line consistent-return
-    function borderColor(a) {
-      if (a >= 0 && a <= 3) {
+    function borderColor(valRate) {
+      if (valRate >= 0 && valRate <= 3) {
         return '#E90000';
       }
-      if (a >= 3 && a < 5) {
+      if (valRate >= 3 && valRate < 5) {
         return '#E97E00';
       }
-      if (a >= 5 && a < 7) {
+      if (valRate >= 5 && valRate < 7) {
         return '#E9D100';
       }
-      if (a >= 7 && a < 10) {
-        return '#66E900';
-      }
+      return '#66E900';
     }
 
-    const putValue = () => {
-      const { rating } = this.props;
-      const { rate } = this.state;
-      const defaultValue = rating || rate;
-      return defaultValue;
-    };
     return (
       <li className="movie-item">
         <div className="item-rate" style={rateStyle(voteAverage)}>
@@ -100,20 +175,12 @@ export default class MovieCard extends Component {
         </div>
         <div className="item-content">
           <h2 className="item-title">{movieTitle}</h2>
-          {date ? this.PremiereSpan(this.props) : null}
-          <div className="item-genres">{this.updateGenres(this.props)}</div>
-          <p className="item-description">{description}</p>
-          <Rate
-            className="item-stars-rate"
-            value={putValue()}
-            onChange={(rateValue) => {
-              console.log(rateValue, id);
-              getRateValue(rateValue, id);
-              this.setState({ rate: rateValue });
-            }}
-            allowHalf
-            count={10}
-          />
+          <span className="item-date">{date ? this.PremiereSpan(this.props) : null}</span>
+          <div className="item-genres">{this.updateGenres(genreIds)}</div>
+          <p className="item-description">
+            <span>{this.descriptionFunc(description)}</span>
+          </p>
+          <Rating className="item-stars-rate" rating={rating} id={id} guestToken={guestToken} />
         </div>
       </li>
     );

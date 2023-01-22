@@ -1,10 +1,15 @@
 .example {
-    margin: 20px 0;
-    margin-bottom: 20px;
-    padding: 30px 50px;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
+    /* display: flex; */
+    margin: 0 50%;
+    /* position: absolute;
+    top: 200px;
+    left: 500px; */
+    /* margin: 20px 0; */
+    /* margin-bottom: 20px; */
+    /* padding: 30px 50px; */
+    /* text-align: center; */
+    /* background: rgba(0, 0, 0, 0.05); */
+     /* border-radius: 4px;  */
 }
 
 :where(.css-dev-only-do-not-override-sk7ap8).ant-spin .ant-spin-dot-item{
@@ -13,5 +18,7 @@
 }
 
 :where(.css-dev-only-do-not-override-sk7ap8).ant-spin .ant-spin-dot{
+    top: 0px; 
+    left: 0px;
     font-size: 63px;
 }
