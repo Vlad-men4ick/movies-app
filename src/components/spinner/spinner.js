@@ -1,6 +1,6 @@
 import { Spin } from 'antd';
 
-import './spin.css';
+import './spiner.css';
 
 function Spinner() {
   return (

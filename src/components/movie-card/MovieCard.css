@@ -96,6 +96,16 @@
   }
 }
 
+@media(max-width: 520px) {
+  /* .movie-item{
+    height: 245px;
+  } */
+  .item-img img{
+    max-width: 165px;
+    /* margin:6px 4px 10px 10px; */
+  }
+}
+
 @media(max-width: 470px) {
   .movie-item{
     height: 245px;

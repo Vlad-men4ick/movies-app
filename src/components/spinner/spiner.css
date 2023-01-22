@@ -1,0 +1,14 @@
+.example {
+    margin: 0 50%;
+}
+
+.ant-spin .ant-spin-dot-item{
+    width: 28px;
+    height: 28px;
+}
+
+.ant-spin .ant-spin-dot{
+    top: 0px; 
+    left: 0px;
+    font-size: 63px;
+}
