@@ -1,1 +1,1 @@
-https://movies-app-bice-ten.vercel.app
+https://movies-app-vlad-men4ick.vercel.app
