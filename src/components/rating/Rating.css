@@ -36,7 +36,7 @@
 }
 
 @media(max-width: 520px) {
-  :where(.css-dev-only-do-not-override-sk7ap8).ant-rate .ant-rate-star:not(:last-child){
+  .ant-rate .ant-rate-star:not(:last-child){
     margin-inline-end: 6px;
   }
   .ant-rate{
@@ -45,13 +45,13 @@
 }
 
 @media(max-width: 500px) {
-  :where(.css-dev-only-do-not-override-sk7ap8).ant-rate .ant-rate-star:not(:last-child){
+  .ant-rate .ant-rate-star:not(:last-child){
     margin-inline-end: 3px;
   }
 }
 
 @media(max-width: 470px) {
-  :where(.css-dev-only-do-not-override-sk7ap8).ant-rate .ant-rate-star:not(:last-child){
+  .ant-rate .ant-rate-star:not(:last-child){
     margin-inline-end: 6px;
   }
   .ant-rate{
