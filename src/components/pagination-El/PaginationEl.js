@@ -5,7 +5,7 @@ function PaginationEl({ changePage, page, mode }) {
   if (mode === 'search') {
     return (
       <Pagination
-        hideOnSinglePage
+        hideOnSinglePage={[0]}
         defaultCurrent={1}
         current={page}
         total={500}
