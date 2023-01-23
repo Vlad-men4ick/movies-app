@@ -6,9 +6,11 @@ import { format } from 'date-fns';
 import { Component } from 'react';
 import truncate from 'lodash.truncate';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 export default class MovieCard extends Component {
   state = {
+    valRate: 0,
     windowInnerWidth: window.innerWidth,
   };
 
@@ -41,6 +43,17 @@ export default class MovieCard extends Component {
   componentDidMount() {
     window.addEventListener('resize', this.onResize);
     this.onResize();
+    const { voteAverage } = this.props;
+    this.setState({
+      valRate: voteAverage,
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { voteAverage } = this.props;
+    if (prevState === this.state) {
+      this.setState(() => ({ valRate: voteAverage }));
+    }
   }
 
   componentWillUnmount() {
@@ -53,7 +66,7 @@ export default class MovieCard extends Component {
     }));
   };
 
-  trunc = (a, f) => truncate(a, f);
+  trunc = (discript, objOption) => truncate(discript, objOption);
 
   descriptionFunc = (disc) => {
     const { windowInnerWidth } = this.state;
@@ -141,33 +154,19 @@ export default class MovieCard extends Component {
 
   render() {
     const { imgPath, voteAverage, movieTitle, description, date, guestToken, id, rating, genreIds } = this.props;
-
+    const { valRate } = this.state;
     const ItemImg = () => (imgPath ? this.MoviePoster(this.props) : this.NoPosterDiv());
 
-    const rateStyle = (valRate) => ({
-      border: '2px solid',
-      width: '30px',
-      height: '30px',
-      borderRadius: '100%',
-      borderColor: borderColor(valRate),
+    const borderRate = classNames('item-rate', {
+      colorRed: valRate >= 0 && valRate <= 3,
+      colorOrange: valRate >= 3 && valRate < 5,
+      colorYellow: valRate >= 5 && valRate < 7,
+      colorGreen: valRate,
     });
-
-    function borderColor(valRate) {
-      if (valRate >= 0 && valRate <= 3) {
-        return '#E90000';
-      }
-      if (valRate >= 3 && valRate < 5) {
-        return '#E97E00';
-      }
-      if (valRate >= 5 && valRate < 7) {
-        return '#E9D100';
-      }
-      return '#66E900';
-    }
 
     return (
       <li className="movie-item">
-        <div className="item-rate" style={rateStyle(voteAverage)}>
+        <div className={borderRate}>
           <span className="item-rate-value">{voteAverage.toFixed(1)}</span>
         </div>
         <div className="item-img">

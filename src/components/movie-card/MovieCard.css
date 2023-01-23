@@ -7,6 +7,31 @@
   margin-bottom: 20px;
   box-shadow: 0 0 5px 4px rgb(211, 211, 211);
 }
+
+.item-rate {
+  border: 2px solid;
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+}
+
+.colorRed {
+  border-color: #E90000;
+}
+
+.colorOrange {
+  border-color: #E97E00;
+}
+
+.colorYellow {
+  border-color: #E9D100;
+}
+
+.colorGreen {
+  border-color: #66E900;
+}
+
+
 .item-content{
   padding: 12px 9px 0px 9px;
   position: relative;
