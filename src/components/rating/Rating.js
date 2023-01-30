@@ -1,6 +1,6 @@
 import './Rating.css';
 import '../movie-card/MovieCard.css';
-import { rateMovie } from '../movie-db-api/movie-db-api';
+import { rateMovie } from '../../service/movie-db-api';
 import { Rate } from 'antd';
 import { Component } from 'react';
 import PropTypes from 'prop-types';
@@ -24,7 +24,10 @@ export default class Rating extends Component {
 
   putValue = () => {
     const { rate } = this.state;
-    const { rating } = this.props;
+    const { rating, id } = this.props;
+    if (sessionStorage.getItem(id)) {
+      return JSON.parse(sessionStorage.getItem(id) || '0');
+    }
     const defaultValue = rating || rate;
     return defaultValue;
   };
@@ -40,6 +43,7 @@ export default class Rating extends Component {
         count={10}
         value={this.putValue()}
         onChange={(rateValue) => {
+          sessionStorage.setItem(JSON.stringify(id), rateValue.toString());
           this.setState({ rate: rateValue });
           this.onRateMovie(rateValue, id, guestToken);
         }}

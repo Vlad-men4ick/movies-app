@@ -1,5 +1,6 @@
+/* eslint-disable consistent-return */
 import MovieCardList from '../movie-card-list/MovieCardList';
-import { service_API, getGenres, getMovieByName, newGuestSession, getRatedMovies } from '../movie-db-api/movie-db-api';
+import { service_API, getGenres, getMovieByName, newGuestSession, getRatedMovies } from '../../service/movie-db-api';
 import Spinner from '../spinner/spinner';
 import EmptyRequest from '../empty-request/EmptyRequest';
 import ErrorInducator from '../error-inducator/ErrorInducator';
@@ -17,41 +18,134 @@ export default class App extends Component {
     error: false,
     movieList: [],
     mode: 'search',
-    guestToken: '',
+    guestToken: localStorage.getItem('guest'),
     page: 1,
     allGenres: {
       genres: [{ id: 1, name: '' }],
     },
+    total: '',
+    searchMovieName: '',
   };
 
   componentDidMount() {
-    const { page } = this.state;
-    newGuestSession().then((sessionID) => {
-      this.setState({
-        guestToken: sessionID.guest_session_id,
+    const { guestToken, page } = this.state;
+    if (guestToken === null) {
+      newGuestSession()
+        .then((sessionID) => {
+          this.setState({
+            guestToken: this.funcLoccal(sessionID),
+          });
+        })
+        .catch((e) => {
+          console.log('problem', e);
+          this.setState({
+            error: true,
+          });
+        });
+    }
+
+    service_API(page)
+      .then((res) =>
+        this.setState({
+          movieList: res.results,
+          loading: false,
+          total: res.total_pages,
+        })
+      )
+      .catch((e) => {
+        console.log('problem', e);
+        this.setState({
+          error: true,
+        });
       });
-    });
 
-    this.receivedResponsServiceAPI(page);
-
-    getGenres().then((res) => {
-      this.setState({
-        allGenres: res,
+    getGenres()
+      .then((res) => {
+        this.setState({
+          allGenres: res,
+        });
+      })
+      .catch((e) => {
+        console.log('problem', e);
+        this.setState({
+          error: true,
+        });
       });
-    });
-  }
-
-  componentDidCatch() {
-    this.setState({ error: true });
   }
 
   changeMode = (value) => {
-    const { guestToken, page } = this.state;
-    this.setState({ mode: value });
+    const { guestToken } = this.state;
+    this.setState({
+      noMoviesFound: false,
+      page: 1,
+      mode: value,
+    });
     if (value === 'rated') {
-      getRatedMovies(guestToken)
-        .then(({ results }) => {
+      getRatedMovies(guestToken, 1)
+        .then(({ results, total_pages }) => {
           this.setState({
+            searchMovieName: '',
+            total: total_pages,
+            movieList: results,
+            loading: true,
+          });
+        })
+        .catch((e) => {
+          console.log('problem', e);
+          this.setState({
+            error: true,
+          });
+        })
+        .finally(() => {
+          this.setState({
+            loading: false,
+          });
+        });
+    } else if (value === 'search') {
+      service_API(1)
+        .then((res) =>
+          this.setState({
+            searchMovieName: '',
+            movieList: res.results,
+            loading: false,
+            total: res.total_pages,
+          })
+        )
+        .catch((e) => {
+          console.log('problem', e);
+          this.setState({
+            error: true,
+          });
+        });
+
+      getGenres()
+        .then((res) => {
+          this.setState({
+            allGenres: res,
+          });
+        })
+        .catch((e) => {
+          console.log('problem', e);
+          this.setState({
+            error: true,
+          });
+        });
+    } else {
+      return null;
+    }
+  };
+
+  changePage = (pages) => {
+    this.setState({
+      page: pages,
+    });
+    const { mode, guestToken, searchMovieName } = this.state;
+    if (mode === 'rated') {
+      getRatedMovies(guestToken, pages)
+        .then(({ results, total_pages }) => {
+          this.setState({
+            page: pages,
+            total: total_pages,
             movieList: results,
             loading: true,
           });
@@ -61,60 +155,112 @@ export default class App extends Component {
             loading: false,
           });
         });
+    } else if (mode === 'search') {
+      service_API(pages)
+        .then((res) =>
+          this.setState({
+            movieList: res.results,
+            loading: false,
+            total: res.total_pages,
+          })
+        )
+        .catch((e) => {
+          console.log('problem', e);
+          this.setState({
+            error: true,
+          });
+        });
+
+      getGenres()
+        .then((res) => {
+          this.setState({
+            allGenres: res,
+          });
+        })
+        .catch((e) => {
+          console.log('propblem', e);
+          this.setState({
+            error: true,
+          });
+        });
     } else {
-      this.changePage(page);
+      getMovieByName(searchMovieName, pages)
+        .then((data) => {
+          this.setState({
+            total: data.total_pages,
+          });
+          if (data.results.length === 0) {
+            this.setState({
+              noMoviesFound: true,
+            });
+          } else {
+            this.setState({
+              total: data.total_pages,
+              noMoviesFound: false,
+            });
+          }
+          this.setState({
+            movieList: data.results,
+          });
+        })
+        .catch((e) => {
+          console.log('propblem', e);
+          this.setState({
+            error: true,
+          });
+        });
     }
   };
 
-  receivedResponsServiceAPI = (page) => {
-    service_API(page)
-      .then((res) =>
-        this.setState({
-          movieList: res.results,
-          loading: false,
-        })
-      )
-      .catch(() => {
-        this.setState({
-          noMoviesFound: true,
-        });
-      });
-  };
-
-  changePage = (page) => {
-    this.setState({
-      page,
-      loading: true,
-    });
-    this.receivedResponsServiceAPI(page);
-  };
-
   onSearchMovieName = (movieName) => {
-    const { page } = this.state;
+    this.setState(() => ({ page: 1, searchMovieName: movieName }));
     if (!movieName) {
       this.setState({
         noMoviesFound: false,
       });
-      this.changePage(page);
+      return null;
     }
-    getMovieByName(movieName).then((data) => {
-      if (data.results.length === 0) {
+
+    getMovieByName(movieName, 1)
+      .then((data) => {
         this.setState({
-          noMoviesFound: true,
+          total: data.total_pages,
         });
-      } else {
+        if (data.results.length === 0) {
+          this.setState({
+            noMoviesFound: true,
+          });
+        } else {
+          this.setState({
+            total: data.total_pages,
+            noMoviesFound: false,
+          });
+        }
         this.setState({
-          noMoviesFound: false,
+          movieList: data.results,
         });
-      }
-      this.setState({
-        movieList: data.results,
+      })
+      .catch((e) => {
+        console.log('propblem', e);
+        this.setState({
+          error: true,
+        });
       });
-    });
   };
 
+  funcLoccal(sessionID) {
+    const { guestToken } = this.state;
+    if (guestToken === null) {
+      localStorage.setItem('guest', sessionID.guest_session_id);
+      return sessionID.guest_session_id;
+    }
+    return sessionID.guest_session_id;
+  }
+
   render() {
-    const { movieList, loading, mode, allGenres, noMoviesFound, error, page, guestToken } = this.state;
+    const { movieList, loading, mode, allGenres, noMoviesFound, error, page, guestToken, searchMovieName, total } =
+      this.state;
+    console.log(this.state);
 
     const spiner = <Spinner />;
     const movieCardList = (
@@ -124,10 +270,10 @@ export default class App extends Component {
         noMoviesFound={noMoviesFound}
         movieList={movieList}
         forGenres={[]}
+        getRateValue={(id, rateValue) => this.onRateMovie(rateValue, id)}
       />
     );
     const emptyRequest = <EmptyRequest />;
-
     const content = () => {
       if (loading) {
         return spiner;
@@ -143,15 +289,18 @@ export default class App extends Component {
       <section className="wrapper">
         <GenresProvider value={allGenres}>
           <Header
+            searchMovieName={searchMovieName}
             mode={mode}
-            onMode={(value) => this.changeMode(value)}
+            onMode={(value) => {
+              this.changeMode(value);
+            }}
             getMovieName={(movieName) => {
-              this.onSearchMovieName(movieName);
+              this.onSearchMovieName(movieName, page);
             }}
           />
           {content()}
         </GenresProvider>
-        <PaginationEl changePage={(currentPage) => this.changePage(currentPage)} page={page} mode={mode} />
+        <PaginationEl totalResults={total} changePage={(currentPage) => this.changePage(currentPage)} page={page} />
       </section>
     );
   }

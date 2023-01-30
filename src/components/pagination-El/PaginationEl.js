@@ -1,22 +1,20 @@
 import { Pagination } from 'antd';
 import PropTypes from 'prop-types';
 
-function PaginationEl({ changePage, page, mode }) {
-  if (mode === 'search') {
-    return (
-      <Pagination
-        hideOnSinglePage={[0]}
-        defaultCurrent={1}
-        current={page}
-        total={500}
-        onChange={(currentPage) => {
-          changePage(currentPage);
-        }}
-      />
-    );
-  }
+function PaginationEl({ changePage, page, totalResults }) {
+  const totalRes = totalResults >= 500 ? 500 : totalResults;
+  return (
+    <Pagination
+      pageSize={1}
+      defaultCurrent={page} // дефолтная страница
+      current={page} // выбранная страница
+      total={totalRes} // общее количество страниц
+      onChange={(currentPage) => {
+        changePage(currentPage);
+      }}
+    />
+  );
 }
-
 export default PaginationEl;
 
 PaginationEl.defaultProps = {

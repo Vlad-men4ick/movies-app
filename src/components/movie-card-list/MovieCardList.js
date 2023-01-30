@@ -1,9 +1,10 @@
 import MovieCard from '../movie-card/MovieCard';
+// import PaginationRate from '../pagination-rate/PaginationRate';
 import PropTypes from 'prop-types';
 
 import './MovieCardList.css';
 
-function MovieList({ movieList, guestToken }) {
+function MovieList({ movieList, guestToken, getRateValue }) {
   const leftMovieList = movieList.map((movieItem) => (
     <MovieCard
       key={movieItem.id}
@@ -16,9 +17,21 @@ function MovieList({ movieList, guestToken }) {
       voteAverage={movieItem.vote_average}
       rating={movieItem.rating}
       guestToken={guestToken}
+      getRateValue={(id, value) => {
+        getRateValue(value, id);
+      }}
     />
   ));
-  return <ul className="movie-list">{leftMovieList}</ul>;
+  // const pagination = () => {
+  //   const arrSessionStorage = sessionStorage.length;
+  //   console.log(arrSessionStorage);
+  // };
+  return (
+    <>
+      <ul className="movie-list">{leftMovieList}</ul>
+      {/* <PaginationRate paginationTotal={pagination()} /> */}
+    </>
+  );
 }
 
 export default MovieList;

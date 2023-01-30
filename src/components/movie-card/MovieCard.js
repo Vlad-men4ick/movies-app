@@ -159,9 +159,9 @@ export default class MovieCard extends Component {
 
     const borderRate = classNames('item-rate', {
       colorRed: valRate >= 0 && valRate <= 3,
-      colorOrange: valRate >= 3 && valRate < 5,
-      colorYellow: valRate >= 5 && valRate < 7,
-      colorGreen: valRate,
+      colorOrange: valRate > 3 && valRate <= 5,
+      colorYellow: valRate > 5 && valRate <= 7,
+      colorGreen: valRate > 7,
     });
 
     return (
